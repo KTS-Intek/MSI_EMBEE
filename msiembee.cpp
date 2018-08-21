@@ -250,10 +250,11 @@ QString MsiEMBee::meterTypeFromMessage(const QByteArray &readArr)
 
 QVariantHash MsiEMBee::isItYour(const QByteArray &arr)
 {
+    //to the meter
     QByteArray modemni;
     if(MsiEMBeeHelper::isThisData2msiEmbee(arr, modemni) && !modemni.isEmpty()){
         QVariantHash hash;
-        hash.insert("nodeID", modemni);
+        hash.insert("nodeID", modemni + "\r\n");
         hash.insert("endSymb", QByteArray::fromHex("C0"));
         hash.insert("readLen", 9);
         return hash;
@@ -266,14 +267,16 @@ QVariantHash MsiEMBee::isItYour(const QByteArray &arr)
 //----------------------------------------------------------------------------------------
 
 QVariantHash MsiEMBee::isItYourRead(const QByteArray &arr)
-{
+{//from the meter
     QByteArray commandCode;
     QList<quint8> meterMess;
     QString errMess;
 
     const bool verbouseMode = true;
 
-    if(MsiEMBeeHelper::messageIsValid("FFFF", arr, verbouseMode, commandCode, errMess, meterMess)){
+    const int indxFrom = qMax(0, arr.indexOf(QByteArray::fromHex("C0")));
+
+    if(MsiEMBeeHelper::messageIsValid("", arr.mid(indxFrom), verbouseMode, commandCode, errMess, meterMess)){
         QVariantHash hash;
         hash.insert("Tak", true);
         return hash;

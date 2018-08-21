@@ -356,14 +356,14 @@ bool MsiEMBeeHelper::isThisData2msiEmbee(const QByteArray &arr, QByteArray &mode
     if(!Crc8PolyB5::unByteStaffing(mas, masSize))
         return false;
 
-    if(mas.first() != 0xF5)
+    if(mas.first() != 0x0)
         return  false;
 
     const quint8 messCrc8 = mas.takeLast();
     const quint8 crc8 = Crc8PolyB5::calculateCrc4mess(mas);
     if(messCrc8 != crc8)
         return false;
-
+    mas.removeFirst();//remove optByte
     QByteArray nodeID = QString("%1").arg(mas.takeFirst(),0,16).toLocal8Bit();
     nodeID = nodeID.rightJustified(2,'0');
     nodeID.prepend(QString("%1").arg(mas.takeFirst(),0,16).toLocal8Bit());
@@ -387,7 +387,7 @@ bool MsiEMBeeHelper::isThisData2msiEmbee(const QByteArray &arr, QByteArray &mode
 //    int messageMeterSize = 0;
 
 //     if(meterMess.size() == messageMeterSize){
-         modemni = nodeID;
+         modemni = QByteArray::number(nodeID.toLongLong());
          return true;
 //     }
 //     return false;

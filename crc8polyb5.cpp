@@ -303,7 +303,7 @@ bool Crc8PolyB5::messageIsValidExt(const bool &isMci, const QByteArray &nodeID, 
     //mas = 07 00 57 01 20 59 47 10 02 21 01 14
     //06 00 50 31 02 00 4C 00 0C 09 60 00
 
-    if(!(nodeID == "FFFF" || nodeID.isEmpty())){//ignore some NI
+    if(nodeID.isEmpty()){//ignore some NI
         mas.removeFirst();
         mas.removeFirst();
     }else{
